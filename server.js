@@ -21,18 +21,6 @@ app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "mustache");
 app.set("layout", "layout");
 
-// Body parser and validator implementation
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: true}));
-app.use(validator());
-
-// Initialize Express Session
-app.use(session({
-  secret: 'thesecret',
-  resave: false,
-  saveUninitialized: false
-}));
-
 // Routes
 app.use(routes);
 
