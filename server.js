@@ -1,10 +1,6 @@
 const express         = require("express");
-const bodyParser      = require("body-parser");
-const validator       = require("express-validator");
-const mustacheExpress = require("mustache-express");
 const path            = require("path");
-const session         = require("express-session");
-const routes          = require("./routes/index.js");
+const morgan          = require("morgan");
 
 // Initialze Express App
 const app = express();
@@ -12,17 +8,16 @@ const app = express();
 // Set Port
 app.set('port', (process.env.PORT || 3000));
 
-// Serve static files to server
-app.use(express.static(path.join(__dirname, "public")));
+// Setup logger
+app.use(morgan(':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] :response-time ms'));
 
-// Setting up View Engine
-app.engine("mustache", mustacheExpress());
-app.set("views", path.join(__dirname, "views"));
-app.set("view engine", "mustache");
-app.set("layout", "layout");
+// Serve static assets
+app.use(express.static(path.resolve(__dirname, 'build')));
 
-// Routes
-app.use(routes);
+// Always return the main index.html, so react-router render the route in the client
+app.get('*', (req, res) => {
+  res.sendFile(path.resolve(__dirname, 'build', 'index.html'));
+});
 
 // Open Port
 app.listen(app.get('port'), function() {
